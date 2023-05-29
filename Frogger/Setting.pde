@@ -1,11 +1,12 @@
 public class Setting{
   Line[] lines = new Line[15];
+  float difficulty = 0;
   
   public Setting() {
-    lines[0] = new Line(1, 2);
-    lines[1] = new Line(1, 0);
+    lines[0] = new Line(1, 2, difficulty);
+    lines[1] = new Line(1, 0, difficulty);
     for (int i = 2; i < 15; i++) {
-      lines[i] = new Line(i, chooseType(i));
+      lines[i] = new Line(i, chooseType(i), difficulty);
     }
   }
   
@@ -27,7 +28,7 @@ public class Setting{
       lines[i] = lines[i + 1];
       lines[i].moveUp();
     }
-    lines[14] = new Line(14, chooseType(14));
+    lines[14] = new Line(14, chooseType(14), difficulty);
     this.displayScreen();
   }
   
@@ -41,6 +42,10 @@ public class Setting{
     }
   }
   
+  public void changeDifficulty() {
+    difficulty += 0.2;
+  }
+  
 }
 
 
@@ -50,25 +55,25 @@ public class Line {
   int size = 70;
   int safe;
   int type;
+  float difficulty;
   color mainColor;
-  PImage[] textures = new PImage[2];
-  PImage texture;
   Obstacle obstacle;
 
 
-  public Line(int ypos, int type) {
+  public Line(int ypos, int type, float difficulty) {
     this.ypos = ypos;
     this.type = type;
+    this.difficulty = difficulty;
     if (type == 0) {
       safe = 1;
       mainColor = color(125, 120, 120);
-      obstacle = new Cars(0, ypos);
+      obstacle = new Cars(difficulty, ypos);
 
     }
     if (type == 1) {
       safe = -1;
       mainColor = color(110, 150, 250);
-      obstacle = new Logs(0, ypos);
+      obstacle = new Logs(difficulty, ypos);
     }
     if (type == 2) {
       safe = 1;
@@ -100,9 +105,8 @@ public class Line {
 
 public class Obstacle {
   int safe;
-  int difficulty;
+  float difficulty;
   int spacing;
-  PImage texture;
   int numOfobjects;
   PVector[] objects;
   int direction = (int) (Math.random() * 2);
@@ -111,7 +115,7 @@ public class Obstacle {
   float spd;
   int type;
   
-  public Obstacle(int difficulty, int ypos) {
+  public Obstacle(float difficulty, int ypos) {
     this.difficulty = difficulty;
     this.ypos = ypos;
     objects = new PVector[0];
@@ -149,15 +153,15 @@ public class Obstacle {
 
 public class Logs extends Obstacle {
   
-  public Logs(int difficulty, int ypos) {
+  public Logs(float difficulty, int ypos) {
     super(difficulty, ypos);
     safe = 2;
     type = 1;
     if (Math.random() * 2 > 1) direction = -1;
     else direction = 1;
-    len = (int) (Math.random() * (3-difficulty)) + 1;
-    spacing = (int) (Math.random() * (2 + 2*difficulty)) + 1;
-    spd = (float) (Math.random() * (2 + difficulty) + 1);
+    len = (int) (Math.random() * (4-difficulty)) + 1;
+    spacing = (int) (Math.random() * (1 + difficulty)) + 1;
+    spd = (float) (Math.random() * (1 + 2 * difficulty) + 1);
     numOfobjects = 13 / (len + spacing);
     objects = new PVector[numOfobjects];
     for (int i = 0; i < numOfobjects; i++) {
@@ -176,15 +180,15 @@ public class Logs extends Obstacle {
 
 public class Cars extends Obstacle {
   
-  public Cars(int difficulty, int ypos) {
+  public Cars(float difficulty, int ypos) {
     super(difficulty, ypos);
     safe = -10;
     type = 0;
     if (Math.random() * 2 > 1) direction = -1;
     else direction = 1;
     len = (int) (Math.random() * (1+difficulty)) + 1;
-    spacing = (int) (Math.random() * (6 - difficulty)) + 3;
-    spd = (float) (Math.random() * (2 + difficulty) + 1);
+    spacing = (int) (Math.random() * (6 - difficulty)) + 2;
+    spd = (float) (Math.random() * (1 + 2 * difficulty) + 1);
     numOfobjects = 13 / (len + spacing);
     objects = new PVector[numOfobjects];
     for (int i = 0; i < numOfobjects; i++) {
@@ -194,7 +198,8 @@ public class Cars extends Obstacle {
   
   public void display(PImage img) {
     for (PVector carPos : objects) {
-      image(car, carPos.x, carPos.y);
+      if (direction == 1) image(car, carPos.x, carPos.y);
+      if (direction == -1) image(carLeft, carPos.x, carPos.y);
     }
   }
 }

@@ -6,6 +6,7 @@
   PImage drowned;
   PImage log;
   PImage car;
+  PImage carLeft;
 
 void setup(){
   size(914,1330);
@@ -17,6 +18,7 @@ void setup(){
   drowned = loadImage("fDrown.png");
   log = loadImage("log.png");
   car = loadImage("car.png");
+  carLeft = loadImage("carLeft.png");
 }
 
 
@@ -88,5 +90,8 @@ void keyPressed() {
   if (key == 'r') {
     setting = new Setting();
     f = new Frog(setting);
+  }
+  if (key == 't') {
+    setting.changeDifficulty();
   }
 }
