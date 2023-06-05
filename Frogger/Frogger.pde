@@ -7,6 +7,7 @@
   PImage log;
   PImage car;
   PImage carLeft;
+  PImage truck;
 
 void setup(){
   size(914,1330);
@@ -19,11 +20,13 @@ void setup(){
   log = loadImage("log.png");
   car = loadImage("car.png");
   carLeft = loadImage("carLeft.png");
+  truck = loadImage("truck.png");
 }
 
 
 Setting setting = new Setting();
 Frog f = new Frog(setting);
+Menu menu = new Menu(f);
 boolean upp = true;
 boolean downn = false;
 boolean rightt = false;
@@ -47,8 +50,9 @@ void draw() {
   if (f.alive == -2) {
   image(drowned, f.updateXpos(), f.updateYpos());
   }
-  
+  menu.displayMenu();
   f.update();
+  menu.update();
 
 }
 
@@ -60,6 +64,7 @@ void keyPressed() {
     }
     else { if (f.alive == 0)
       setting.nextLine();
+      menu.scoreUp();
     }
     upp = true;
     downn = false;
@@ -90,6 +95,7 @@ void keyPressed() {
   if (key == 'r') {
     setting = new Setting();
     f = new Frog(setting);
+    menu.newFrog(f);
   }
   if (key == 't') {
     setting.changeDifficulty();

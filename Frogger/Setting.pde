@@ -86,8 +86,8 @@ public class Line {
   public void printLine() {
     fill(mainColor);
     rect(2, (1160 - ypos * size), 910, size);
-    if (type == 1) obstacle.display(log);
-    if (type == 0) obstacle.display(car);
+    if (type == 1) obstacle.display();
+    if (type == 0) obstacle.display();
   }
 
   public void moveUp() {
@@ -118,10 +118,12 @@ public class Obstacle {
   public Obstacle(float difficulty, int ypos) {
     this.difficulty = difficulty;
     this.ypos = ypos;
+    if (Math.random() * 2 > 1) direction = -1;
+    else direction = 1;
     objects = new PVector[0];
   }
   
-  public void display(PImage img) {
+  public void display() {
     
   }
    
@@ -157,8 +159,6 @@ public class Logs extends Obstacle {
     super(difficulty, ypos);
     safe = 2;
     type = 1;
-    if (Math.random() * 2 > 1) direction = -1;
-    else direction = 1;
     len = (int) (Math.random() * (4-difficulty)) + 1;
     spacing = (int) (Math.random() * (1 + difficulty)) + 1;
     spd = (float) (Math.random() * (1 + 2 * difficulty) + 1);
@@ -169,24 +169,25 @@ public class Logs extends Obstacle {
     }
   }
   
-  public void display(PImage img) {
+  public void display() {
     for (PVector logPos : objects) {
       for (int i = 0; i < len; i++){
-        image(img, logPos.x + i * 70, logPos.y);
+        image(log, logPos.x + i * 70, logPos.y);
       }
     }
   }
 }
 
 public class Cars extends Obstacle {
+  int carOrBus;
   
   public Cars(float difficulty, int ypos) {
     super(difficulty, ypos);
     safe = -10;
     type = 0;
-    if (Math.random() * 2 > 1) direction = -1;
-    else direction = 1;
-    len = (int) (Math.random() * (1+difficulty)) + 1;
+    if ((int) (Math.random() * 3) < 2) carOrBus = 1;
+    else carOrBus = 2;
+    len = carOrBus;
     spacing = (int) (Math.random() * (6 - difficulty)) + 2;
     spd = (float) (Math.random() * (1 + 2 * difficulty) + 1);
     numOfobjects = 13 / (len + spacing);
@@ -196,10 +197,16 @@ public class Cars extends Obstacle {
     }
   }
   
-  public void display(PImage img) {
+  public void display() {
     for (PVector carPos : objects) {
-      if (direction == 1) image(car, carPos.x, carPos.y);
-      if (direction == -1) image(carLeft, carPos.x, carPos.y);
+      if (direction == 1) {
+        if (carOrBus == 1) image(car, carPos.x, carPos.y);
+        else image(truck, carPos.x, carPos.y);
+      }
+      if (direction == -1) {
+        if (carOrBus == 1) image(carLeft, carPos.x, carPos.y);
+        else image(truck, carPos.x, carPos.y);
+      }
     }
   }
 }
