@@ -43,7 +43,10 @@ public class Setting{
   }
   
   public void changeDifficulty() {
+    if (difficulty < 4) {
     difficulty += 0.2;
+    difficult.play();
+    }
   }
   
 }
@@ -56,7 +59,7 @@ public class Line {
   int safe;
   int type;
   float difficulty;
-  color mainColor;
+  PImage texture;
   Obstacle obstacle;
 
 
@@ -66,28 +69,28 @@ public class Line {
     this.difficulty = difficulty;
     if (type == 0) {
       safe = 1;
-      mainColor = color(125, 120, 120);
+      texture = road;
       obstacle = new Cars(difficulty, ypos);
 
     }
     if (type == 1) {
       safe = -1;
-      mainColor = color(110, 150, 250);
+      texture = water;
       obstacle = new Logs(difficulty, ypos);
     }
     if (type == 2) {
       safe = 1;
-      mainColor = color(0,0,0);
+      texture = blank;
       obstacle = new Obstacle(-2, ypos);
 
     }
   }
 
   public void printLine() {
-    fill(mainColor);
-    rect(2, (1160 - ypos * size), 910, size);
-    if (type == 1) obstacle.display();
-    if (type == 0) obstacle.display();
+    if (type == 0) image(road, 2, (1160 - ypos * size));
+    if (type == 1) image(water, 2, (1160 - ypos * size));
+    if (type == 3) image(blank, 2, (1160 - ypos * size));
+    obstacle.display();
   }
 
   public void moveUp() {
@@ -205,7 +208,7 @@ public class Cars extends Obstacle {
       }
       if (direction == -1) {
         if (carOrBus == 1) image(carLeft, carPos.x, carPos.y);
-        else image(truck, carPos.x, carPos.y);
+        else image(truckLeft, carPos.x, carPos.y);
       }
     }
   }

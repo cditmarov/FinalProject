@@ -1,3 +1,12 @@
+
+import processing.sound.*;
+  
+  SoundFile backgroundMusic;
+  SoundFile difficult;
+  SoundFile crash;
+  SoundFile plop;
+  SoundFile wan;
+  
   PImage up;
   PImage down;
   PImage right;
@@ -8,6 +17,14 @@
   PImage car;
   PImage carLeft;
   PImage truck;
+  PImage truckLeft;
+  PImage road;
+  PImage water;
+  PImage blank;
+  PImage tint;
+  PImage sad;
+  PImage start;
+  PImage controls;
 
 void setup(){
   size(914,1330);
@@ -21,12 +38,30 @@ void setup(){
   car = loadImage("car.png");
   carLeft = loadImage("carLeft.png");
   truck = loadImage("truck.png");
+  truckLeft = loadImage("truckLeft.png");
+  road = loadImage("road.png");
+  blank = loadImage("blank.png");
+  water = loadImage("water.png");
+  tint = loadImage("tint.png");
+  sad = loadImage("sad.png");
+  start = loadImage("start.png");
+  controls = loadImage("controls.png");
+  backgroundMusic = new SoundFile(this, "backgroundMusic.wav");
+  difficult = new SoundFile(this, "difficulty.wav");
+  crash = new SoundFile(this, "crash.wav");
+  plop = new SoundFile(this, "plop.wav");
+  wan = new SoundFile(this, "wan.wav");
+  backgroundMusic.play();
+  backgroundMusic.loop();
+
 }
 
-
+Boolean startGame = false;
+Boolean menuOn = false;
+Boolean canMove = false;
 Setting setting = new Setting();
 Frog f = new Frog(setting);
-Menu menu = new Menu(f);
+Menu menu = new Menu(f, setting);
 boolean upp = true;
 boolean downn = false;
 boolean rightt = false;
@@ -46,18 +81,36 @@ void draw() {
   if (leftt && f.alive == 0) {
   image(left, f.updateXpos(), f.updateYpos()); }
   if (f.alive == -1) {
-  image(dead, f.updateXpos(), f.updateYpos()); }
+  image(dead, f.updateXpos(), f.updateYpos());
+  if (! wan.isPlaying()) wan.play();
+  if (! crash.isPlaying()) crash.play();
+}
   if (f.alive == -2) {
   image(drowned, f.updateXpos(), f.updateYpos());
-  }
+  if (! wan.isPlaying()) wan.play();
+  if (! plop.isPlaying()) plop.play();
+}
   menu.displayMenu();
   f.update();
   menu.update();
+  if (startGame == false) {
+    image(start, 2,0);
+  }
+  if (menuOn == true) {
+    image(controls, 2,0);
+  }
+  
+  fill(255);
+  rect(0,0, 914, 2);
+  rect(0,0,2, 1330);
+  rect(912, 0, 2, 1330);
+  rect(0, 1328, 914, 2);
 
 }
 
   
 void keyPressed() {
+  if (canMove){
   if (key == 'w') {
     if (f.ypos > 950) {
     f.up();
@@ -92,12 +145,33 @@ void keyPressed() {
     upp = false;
     downn = false;  
   }
+  }
   if (key == 'r') {
     setting = new Setting();
     f = new Frog(setting);
-    menu.newFrog(f);
+    menu.reset(f, setting);
+    wan.stop();
+    crash.stop();
+    plop.stop();
   }
   if (key == 't') {
     setting.changeDifficulty();
+  }
+  
+  if (key == 'q') {
+    startGame = true;
+    menuOn = false;
+    canMove = true;
+  }
+  
+  if(key == 'm') {
+    menuOn = true;
+    canMove = false;
+    setting = new Setting();
+    f = new Frog(setting);
+    menu.reset(f, setting);
+    wan.stop();
+    crash.stop();
+    plop.stop();
   }
 }
